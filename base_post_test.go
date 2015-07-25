@@ -234,7 +234,7 @@ func TestSessionPostJsonRequestInvalidXML(t *testing.T) {
 
 func TestBasicPostRequestUploadInvalidURL(t *testing.T) {
 
-	fd, err := FileUploadFromDisk("test_files/mypassword")
+	fd, err := FileUploadFromDisk("file", "test_files/mypassword")
 
 	if err != nil {
 		t.Error("Unable to open file: ", err)
@@ -244,8 +244,8 @@ func TestBasicPostRequestUploadInvalidURL(t *testing.T) {
 
 	resp, _ := Post("%../dir/",
 		&RequestOptions{
-			File: fd,
-			Data: map[string]string{"One": "Two"},
+			Files: []*FileUpload{fd},
+			Data:  map[string]string{"One": "Two"},
 		})
 
 	if resp.Error == nil {
@@ -256,7 +256,7 @@ func TestBasicPostRequestUploadInvalidURL(t *testing.T) {
 func TestSessionPostRequestUploadInvalidURL(t *testing.T) {
 	session := NewSession(nil)
 
-	fd, err := FileUploadFromDisk("test_files/mypassword")
+	fd, err := FileUploadFromDisk("file", "test_files/mypassword")
 
 	if err != nil {
 		t.Error("Unable to open file: ", err)
@@ -266,8 +266,8 @@ func TestSessionPostRequestUploadInvalidURL(t *testing.T) {
 
 	_, err = session.Post("%../dir/",
 		&RequestOptions{
-			File: fd,
-			Data: map[string]string{"One": "Two"},
+			Files: []*FileUpload{fd},
+			Data:  map[string]string{"One": "Two"},
 		})
 
 	if err == nil {
@@ -279,8 +279,8 @@ func TestBasicPostRequestUploadInvalidFileUpload(t *testing.T) {
 
 	resp, _ := Post("%../dir/",
 		&RequestOptions{
-			File: &FileUpload{FileName: `\x00%'"üfdsufhid\Ä\"D\\\"JS%25//'"H•\\\\'"¶•ªç∂\uf8\x8AKÔÓÔ`, FileContents: nil},
-			Data: map[string]string{"One": "Two"},
+			Files: []*FileUpload{&FileUpload{FileName: `\x00%'"üfdsufhid\Ä\"D\\\"JS%25//'"H•\\\\'"¶•ªç∂\uf8\x8AKÔÓÔ`, FileContents: nil}},
+			Data:  map[string]string{"One": "Two"},
 		})
 
 	if resp.Error == nil {
@@ -292,8 +292,8 @@ func TestSessionPostRequestUploadInvalidFileUpload(t *testing.T) {
 	session := NewSession(nil)
 	_, err := session.Post("%../dir/",
 		&RequestOptions{
-			File: &FileUpload{FileName: "üfdsufhidÄDJSHAKÔÓÔ", FileContents: nil},
-			Data: map[string]string{"One": "Two"},
+			Files: []*FileUpload{&FileUpload{FileName: "üfdsufhidÄDJSHAKÔÓÔ", FileContents: nil}},
+			Data:  map[string]string{"One": "Two"},
 		})
 
 	if err == nil {
@@ -334,8 +334,8 @@ func TestBasicPostRequestUploadErrorReader(t *testing.T) {
 	rd.err = fmt.Errorf("Random Error")
 	_, err := Post("http://httpbin.org/post",
 		&RequestOptions{
-			File: &FileUpload{FileName: "Random.test", FileContents: rd},
-			Data: map[string]string{"One": "Two"},
+			Files: []*FileUpload{&FileUpload{FileName: "Random.test", FileContents: rd}},
+			Data:  map[string]string{"One": "Two"},
 		})
 
 	if err == nil {
@@ -348,8 +348,8 @@ func TestBasicPostRequestUploadErrorEOFReader(t *testing.T) {
 	rd.err = io.EOF
 	_, err := Post("http://httpbin.org/post",
 		&RequestOptions{
-			File: &FileUpload{FileName: "Random.test", FileContents: rd},
-			Data: map[string]string{"One": "Two"},
+			Files: []*FileUpload{&FileUpload{FileName: "Random.test", FileContents: rd}},
+			Data:  map[string]string{"One": "Two"},
 		})
 
 	if err != nil {
@@ -359,7 +359,7 @@ func TestBasicPostRequestUploadErrorEOFReader(t *testing.T) {
 
 func TestBasicPostRequestUpload(t *testing.T) {
 
-	fd, err := FileUploadFromDisk("test_files/mypassword")
+	fd, err := FileUploadFromDisk("file", "test_files/mypassword")
 
 	if err != nil {
 		t.Error("Unable to open file: ", err)
@@ -367,8 +367,8 @@ func TestBasicPostRequestUpload(t *testing.T) {
 
 	resp, _ := Post("http://httpbin.org/post",
 		&RequestOptions{
-			File: fd,
-			Data: map[string]string{"One": "Two"},
+			Files: []*FileUpload{fd},
+			Data:  map[string]string{"One": "Two"},
 		})
 
 	if resp.Error != nil {

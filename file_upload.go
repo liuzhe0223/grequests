@@ -8,6 +8,9 @@ import (
 // FileUpload is a struct that is used to specify the file that a User
 // wishes to upload.
 type FileUpload struct {
+	//  FeildName is the name of the multipart feild name
+	FeildName string
+
 	// Filename is the name of the file that you wish to upload. We use this to guess the mimetype as well as pass it onto the server
 	FileName string
 
@@ -16,13 +19,13 @@ type FileUpload struct {
 }
 
 // FileUploadFromDisk allows you to create a FileUpload struct by just specifying a location on the diskI
-func FileUploadFromDisk(fileName string) (*FileUpload, error) {
+func FileUploadFromDisk(feildName, fileName string) (*FileUpload, error) {
 	fd, err := os.Open(fileName)
 
 	if err != nil {
 		return nil, err
 	}
 
-	return &FileUpload{FileContents: fd, FileName: fileName}, nil
+	return &FileUpload{FeildName: feildName, FileContents: fd, FileName: fileName}, nil
 
 }

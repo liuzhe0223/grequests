@@ -19,7 +19,7 @@ func TestBasicPutRequest(t *testing.T) {
 }
 
 func TestBasicPutUploadRequest(t *testing.T) {
-	fd, err := FileUploadFromDisk("test_files/mypassword")
+	fd, err := FileUploadFromDisk("file", "test_files/mypassword")
 
 	if err != nil {
 		t.Error("Unable to open file: ", err)
@@ -27,8 +27,8 @@ func TestBasicPutUploadRequest(t *testing.T) {
 
 	resp, _ := Put("http://httpbin.org/put",
 		&RequestOptions{
-			File: fd,
-			Data: map[string]string{"One": "Two"},
+			Files: []*FileUpload{fd},
+			Data:  map[string]string{"One": "Two"},
 		})
 
 	if resp.Error != nil {
@@ -42,7 +42,7 @@ func TestBasicPutUploadRequest(t *testing.T) {
 }
 
 func TestBasicPutUploadRequestInvalidURL(t *testing.T) {
-	fd, err := FileUploadFromDisk("test_files/mypassword")
+	fd, err := FileUploadFromDisk("file", "test_files/mypassword")
 
 	if err != nil {
 		t.Error("Unable to open file: ", err)
@@ -50,8 +50,8 @@ func TestBasicPutUploadRequestInvalidURL(t *testing.T) {
 
 	_, err = Put("%../dir/",
 		&RequestOptions{
-			File: fd,
-			Data: map[string]string{"One": "Two"},
+			Files: []*FileUpload{fd},
+			Data:  map[string]string{"One": "Two"},
 		})
 
 	if err == nil {
@@ -60,7 +60,7 @@ func TestBasicPutUploadRequestInvalidURL(t *testing.T) {
 }
 
 func TestSessionPutUploadRequestInvalidURL(t *testing.T) {
-	fd, err := FileUploadFromDisk("test_files/mypassword")
+	fd, err := FileUploadFromDisk("file", "test_files/mypassword")
 
 	if err != nil {
 		t.Error("Unable to open file: ", err)
@@ -70,8 +70,8 @@ func TestSessionPutUploadRequestInvalidURL(t *testing.T) {
 
 	_, err = session.Put("%../dir/",
 		&RequestOptions{
-			File: fd,
-			Data: map[string]string{"One": "Two"},
+			Files: []*FileUpload{fd},
+			Data:  map[string]string{"One": "Two"},
 		})
 
 	if err == nil {
